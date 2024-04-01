@@ -1,20 +1,5 @@
 .wrapper {
   display: flex;
-  gap: 60px;
-  align-items: center;
-  justify-content: center;
   flex-direction: column;
-  background: linear-gradient(
-    90deg,
-    rgba(131, 58, 180, 1) 0%,
-    rgba(255, 189, 189, 1) 50%,
-    rgba(252, 176, 69, 1) 100%
-  );
-}
-
-.title {
-  margin-top: 50px;
-  font-size: 40px;
-  color: white;
-  text-shadow: rgba(0, 0, 0, 0.35) 0px 5px 10px;
+  align-items: center;
 }

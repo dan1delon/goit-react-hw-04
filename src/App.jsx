@@ -1,56 +1,90 @@
-import ContactForm from './components/ContactForm/ContactForm';
-import SearchBox from './components/SearchBox/SearchBox';
-import ContactList from './components/ContactList/ContactList';
-import { useEffect, useState } from 'react';
-import { nanoid } from 'nanoid';
+import SearchBar from './components/SearchBar/SearchBar';
+import ErrorMessage from './components/ErrorMessage/ErrorMessage';
+import Loader from './components/Loader/Loader';
+import ImageGallery from './components/ImageGallery/ImageGallery';
+import ImageModal from './components/ImageModal/ImageModal';
+import LoadMoreBtn from './components/LoadMoreBtn/LoadMoreBtn';
+
+import { useState, useEffect, useRef } from 'react';
+import { fetchImagesWithQuery } from './images-api';
+import toast from 'react-hot-toast';
 
 import css from './App.module.css';
 
-import initialValues from './contacts.json';
-
 const App = () => {
-  const [filter, setFilter] = useState('');
-  const [contacts, setContact] = useState(() => {
-    const savedContacts = window.localStorage.getItem('contacts');
+  const [images, setImages] = useState([]);
+  const [loader, setLoader] = useState(false);
+  const [error, setError] = useState(false);
+  const [query, setQuery] = useState('');
+  const [page, setPage] = useState(1);
+  const [chosenImage, setChosenImage] = useState(null);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
 
-    if (savedContacts !== null) {
-      return JSON.parse(savedContacts);
-    }
-
-    return initialValues;
-  });
+  const btnRef = useRef();
 
   useEffect(() => {
-    window.localStorage.setItem('contacts', JSON.stringify(contacts));
-  }, [contacts]);
+    async function fetchImages() {
+      try {
+        setLoader(true);
+        const response = await fetchImagesWithQuery(query, page);
+        setImages(prevImages => [...prevImages, ...response.results]);
+      } catch (error) {
+        setError(true);
+      } finally {
+        setLoader(false);
+      }
+    }
+    fetchImages();
+  }, [setImages, query, page]);
 
-  const onAddContact = contactData => {
-    const finalContact = {
-      id: nanoid(),
-      ...contactData,
-    };
+  function onSubmit(e) {
+    e.preventDefault();
+    setImages([]);
 
-    setContact(prevContacts => [...prevContacts, finalContact]);
-  };
+    const notify = () => toast('Please, enter a keyword to search');
+    if (e.target.search.value.trim() === '') {
+      notify();
+    }
 
-  const deleteContact = contactId => {
-    console.log(contactId);
-    setContact(prevContacts => {
-      console.log(prevContacts);
-      return prevContacts.filter(contact => contact.id !== contactId);
-    });
-  };
+    setQuery(e.target.search.value.trim());
+    setPage(1);
+    e.target.reset();
+  }
 
-  const filteredContacts = contacts.filter(contact =>
-    contact.name.toLowerCase().includes(filter.toLowerCase())
-  );
+  function loadMore() {
+    setPage(prevPage => prevPage + 1);
+    btnRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function openModal(data) {
+    setModalIsOpen(true);
+    setChosenImage(data);
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+    setModalIsOpen(false);
+    setChosenImage(null);
+    document.body.style.overflow = 'auto';
+  }
 
   return (
     <div className={css.wrapper}>
-      <h1 className={css.title}>Phone book</h1>
-      <ContactForm onAddContact={onAddContact} />
-      <SearchBox value={filter} onFilter={setFilter} />
-      <ContactList contacts={filteredContacts} onDelete={deleteContact} />
+      <SearchBar onSubmit={onSubmit} />
+      {error ? (
+        <ErrorMessage />
+      ) : (
+        <ImageGallery images={images} openModal={openModal} />
+      )}
+      {loader && <Loader />}
+      {images.length > 0 && !loader && (
+        <LoadMoreBtn loadMore={loadMore} ref={btnRef} />
+      )}
+      <ImageModal
+        chosenImage={chosenImage}
+        closeModal={closeModal}
+        modalIsOpen={modalIsOpen}
+      />
     </div>
   );
 };

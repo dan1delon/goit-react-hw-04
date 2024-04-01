@@ -1,0 +1,48 @@
+.header {
+  background-color: aliceblue;
+  width: 100%;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(
+    90deg,
+    rgba(58, 136, 180, 1) 0%,
+    rgba(255, 175, 166, 1) 50%,
+    rgba(252, 176, 69, 1) 100%
+  );
+}
+
+.form {
+  display: flex;
+  gap: 20px;
+}
+
+.input {
+  width: 300px;
+  padding: 10px 15px;
+  border-radius: 10px;
+  border: none;
+  outline: none;
+  background: rgba(255, 255, 255, 0.89);
+  transition: box-shadow 0.2s ease-out;
+}
+
+.input:focus,
+.input:active {
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+
+.btn {
+  padding: 10px 15px;
+  border-radius: 10px;
+  border: none;
+  background-color: #9171f8;
+  color: white;
+  cursor: pointer;
+  transition: box-shadow 0.2s ease-out;
+}
+
+.btn:hover {
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}

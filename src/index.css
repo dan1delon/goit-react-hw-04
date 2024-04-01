@@ -4,6 +4,10 @@
   font-weight: 400;
 }
 
+body {
+  background-color: #121212;
+}
+
 ul {
   list-style: none;
   padding: 0;
@@ -12,4 +16,29 @@ ul {
 
 p {
   margin: 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin: 0;
+}
+
+a {
+  color: currentColor;
+  text-decoration: none;
+}
+
+button {
+  cursor: pointer;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
 }
