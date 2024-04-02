@@ -7,7 +7,6 @@ import LoadMoreBtn from './components/LoadMoreBtn/LoadMoreBtn';
 
 import { useState, useEffect, useRef } from 'react';
 import { fetchImagesWithQuery } from './images-api';
-import toast from 'react-hot-toast';
 
 import css from './App.module.css';
 
@@ -37,18 +36,11 @@ const App = () => {
     fetchImages();
   }, [setImages, query, page]);
 
-  function onSubmit(e) {
-    e.preventDefault();
+  function onSubmit(searchQuery) {
     setImages([]);
 
-    const notify = () => toast('Please, enter a keyword to search');
-    if (e.target.search.value.trim() === '') {
-      notify();
-    }
-
-    setQuery(e.target.search.value.trim());
+    setQuery(searchQuery);
     setPage(1);
-    e.target.reset();
   }
 
   function loadMore() {
